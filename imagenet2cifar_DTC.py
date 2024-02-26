@@ -8,7 +8,7 @@ from sklearn.metrics.cluster import normalized_mutual_info_score as nmi_score
 from sklearn.metrics import adjusted_rand_score as ari_score
 from utils.util import cluster_acc, Identity, AverageMeter, seed_torch, str2bool
 from data.cifar import CIFAR10 
-from data.utils import TransformTwice, RandomTranslateWithReflect
+from data.util import TransformTwice, RandomTranslateWithReflect
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 from utils import ramps 

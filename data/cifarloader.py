@@ -11,7 +11,7 @@ else:
 import random
 import torch
 import torch.utils.data as data
-from utils import download_url, check_integrity, TransformTwice, RandomTranslateWithReflect
+from util import download_url, check_integrity, TransformTwice, RandomTranslateWithReflect
 import torchvision.transforms as transforms
 
 
