@@ -222,7 +222,7 @@ def CIFAR10Loader(root, batch_size, split='train', num_workers=2, labeled = True
             transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
         ]))
 
-    dataset = CIFAR10(root=root, split=split, labeled=labeled, transform=transform)
+    dataset = CIFAR10(root=root, split=split, labeled=labeled, transform=transform, download=True)
     loader = data.DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, num_workers=2)
     return loader
 
