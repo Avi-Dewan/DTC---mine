@@ -49,7 +49,7 @@ if __name__ == "__main__":
             formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--lr', type=float, default=0.1)
     parser.add_argument('--gamma', type=float, default=0.1)
-    parser.add_argument('--epochs', default=1, type=int) # 180
+    parser.add_argument('--epochs', default=180, type=int) # 180
     parser.add_argument('--milestones', default=[100, 150], type=int, nargs='+')
     parser.add_argument('--batch_size', default=128, type=int)
     parser.add_argument('--num_classes', default=5, type=int)

@@ -222,8 +222,8 @@ if __name__ == "__main__":
     parser.add_argument('--lr', type=float, default=0.05)
     parser.add_argument('--momentum', type=float, default=0.9)
     parser.add_argument('--weight_decay', type=float, default=1e-4)
-    parser.add_argument('--warmup_epochs', default=1, type=int) #10
-    parser.add_argument('--epochs', default=1, type=int) #100
+    parser.add_argument('--warmup_epochs', default=10, type=int) #10
+    parser.add_argument('--epochs', default=100, type=int) #100
     parser.add_argument('--rampup_length', default=5, type=int)
     parser.add_argument('--rampup_coefficient', type=float, default=10.0)
     parser.add_argument('--batch_size', default=128, type=int)
