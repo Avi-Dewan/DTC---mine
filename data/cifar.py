@@ -9,7 +9,7 @@ if sys.version_info[0] == 2:
 else:
     import pickle
 import torch.utils.data as data
-from utils import download_url, check_integrity
+from data.util import download_url, check_integrity
 import torch
 
 class CIFAR10(data.Dataset):
