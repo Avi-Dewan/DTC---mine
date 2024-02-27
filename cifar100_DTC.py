@@ -190,7 +190,7 @@ def TEP_train(model, train_loader, eva_loader, args):
     torch.save(model.state_dict(), args.model_dir)
     print("model saved to {}.".format(args.model_dir))
 
-def test(model, test_loader, args, epoch='test'):
+def test(model, test_loader, args, epoch='test', tsne=False):
     model.eval()
     preds=np.array([])
     targets=np.array([])
@@ -209,6 +209,17 @@ def test(model, test_loader, args, epoch='test'):
     acc, nmi, ari = cluster_acc(targets.astype(int), preds.astype(int)), nmi_score(targets, preds), ari_score(targets, preds)
     print('Test acc {:.4f}, nmi {:.4f}, ari {:.4f}'.format(acc, nmi, ari))
     probs = torch.from_numpy(probs)
+    if tsne:
+        from sklearn.manifold import TSNE
+        import matplotlib.pyplot as plt
+        # tsne plot
+         # Create t-SNE visualization
+        X_embedded = TSNE(n_components=2).fit_transform(feats)  # Use meaningful features for t-SNE
+
+        plt.figure(figsize=(8, 6))
+        plt.scatter(X_embedded[:, 0], X_embedded[:, 1], c=targets, cmap='viridis')
+        plt.title("t-SNE Visualization of Learned Features on Unlabelled CIFAR-10 Subset")
+        plt.savefig(args.model_folder+'/tsne.png')
     return acc, nmi, ari, probs 
 
 if __name__ == "__main__":
@@ -221,8 +232,8 @@ if __name__ == "__main__":
     parser.add_argument('--gamma', type=float, default=0.5)
     parser.add_argument('--momentum', type=float, default=0.9)
     parser.add_argument('--weight_decay', type=float, default=1e-5)
-    parser.add_argument('--warmup_epochs', default=30, type=int)
-    parser.add_argument('--epochs', default=100, type=int)
+    parser.add_argument('--warmup_epochs', default=1, type=int)
+    parser.add_argument('--epochs', default=1, type=int)
     parser.add_argument('--rampup_length', default=5, type=int)
     parser.add_argument('--rampup_coefficient', type=float, default=10.0)
     parser.add_argument('--milestones', default=[20, 40, 60, 80], type=int, nargs='+')
@@ -246,6 +257,7 @@ if __name__ == "__main__":
     model_dir= args.exp_root+ '{}/{}'.format(runner_name, args.DTC)
     if not os.path.exists(model_dir):
         os.makedirs(model_dir)
+    args.model_folder = model_dir
     args.model_dir = model_dir+'/'+args.model_name+'.pth'
     args.save_txt_path= args.exp_root + '{}/{}/{}'.format(runner_name, args.DTC, args.save_txt_name)
 

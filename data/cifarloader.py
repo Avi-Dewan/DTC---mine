@@ -247,11 +247,11 @@ def CIFAR100Loader(root, batch_size, split='train', num_workers=2, labeled = Tru
             transforms.Normalize((0.507, 0.487, 0.441), (0.267, 0.256, 0.276)),
         ]))
     if mode == 'probe':
-        dataset = CIFAR100(root=root, split=split, labeled=True, transform=transform, labeled_list=range(80, 90), unlabeled_list=None)
+        dataset = CIFAR100(root=root, split=split, labeled=True, transform=transform, labeled_list=range(80, 90), unlabeled_list=None, download=True)
     elif mode == '80_10':
-        dataset = CIFAR100(root=root, split=split, labeled=labeled, transform=transform, labeled_list=range(80), unlabeled_list=range(90, 100))
+        dataset = CIFAR100(root=root, split=split, labeled=labeled, transform=transform, labeled_list=range(80), unlabeled_list=range(90, 100), download=True)
     elif mode == '80_20':
-        dataset = CIFAR100(root=root, split=split, labeled=labeled, transform=transform, labeled_list=range(80), unlabeled_list=range(80, 100))
+        dataset = CIFAR100(root=root, split=split, labeled=labeled, transform=transform, labeled_list=range(80), unlabeled_list=range(80, 100), download=True)
 
     loader = data.DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers, pin_memory=True)
     return loader
