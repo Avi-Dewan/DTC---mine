@@ -212,7 +212,7 @@ def test(model, test_loader, args, tsne=False):
     if tsne:
         from sklearn.manifold import TSNE
         import matplotlib.pyplot as plt
-        print('plotting t-SNE ...') 
+        # print('plotting t-SNE ...') 
         # tsne plot
          # Create t-SNE visualization
         X_embedded = TSNE(n_components=2).fit_transform(feats)  # Use meaningful features for t-SNE
@@ -233,8 +233,8 @@ if __name__ == "__main__":
     parser.add_argument('--gamma', type=float, default=0.5)
     parser.add_argument('--momentum', type=float, default=0.9)
     parser.add_argument('--weight_decay', type=float, default=1e-5)
-    parser.add_argument('--warmup_epochs', default=1, type=int)
-    parser.add_argument('--epochs', default=1, type=int)
+    parser.add_argument('--warmup_epochs', default=10, type=int)
+    parser.add_argument('--epochs', default=100, type=int)
     parser.add_argument('--rampup_length', default=5, type=int)
     parser.add_argument('--rampup_coefficient', type=float, default=10.0)
     parser.add_argument('--milestones', default=[20, 40, 60, 80], type=int, nargs='+')
