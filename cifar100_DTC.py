@@ -212,6 +212,7 @@ def test(model, test_loader, args, epoch='test', tsne=False):
     if tsne:
         from sklearn.manifold import TSNE
         import matplotlib.pyplot as plt
+        print('plotting t-SNE ...') 
         # tsne plot
          # Create t-SNE visualization
         X_embedded = TSNE(n_components=2).fit_transform(feats)  # Use meaningful features for t-SNE
