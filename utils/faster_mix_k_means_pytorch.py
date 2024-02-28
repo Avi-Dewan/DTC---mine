@@ -4,7 +4,7 @@ import random
 from sklearn.utils._joblib import Parallel, delayed, effective_n_jobs
 from sklearn.utils import check_random_state
 import torch
-from pairwise import pairwise_distance
+from utils.pairwise import pairwise_distance
 
 class K_Means:
     def __init__(self, k =3, tolerance = 1e-4, max_iterations = 100, init='k-means++', n_init=10, random_state=None, n_jobs=None, pairwise_batch_size = None):
