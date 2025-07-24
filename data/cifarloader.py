@@ -14,6 +14,47 @@ import torch.utils.data as data
 from data.util import download_url, check_integrity, TransformTwice, RandomTranslateWithReflect
 import torchvision.transforms as transforms
 
+# Imbalance config
+from collections import defaultdict
+import ast
+
+def apply_class_imbalance(dataset, imbalance_config, seed=42):
+    """
+    Applies class imbalance by removing a percentage of samples from specified classes.
+    """
+    random.seed(seed)
+    targets = np.array(dataset.targets)
+    indices_to_remove = []
+
+    for imbalance in imbalance_config:
+        target_class = imbalance['class']
+        remove_percentage = imbalance['percentage'] / 100
+        class_indices = np.where(targets == target_class)[0]
+        num_to_remove = int(len(class_indices) * remove_percentage)
+        samples_to_remove = random.sample(list(class_indices), num_to_remove)
+        indices_to_remove.extend(samples_to_remove)
+
+    indices_to_remove = set(indices_to_remove)
+    dataset.data = np.delete(dataset.data, list(indices_to_remove), axis=0)
+    dataset.targets = np.delete(dataset.targets, list(indices_to_remove), axis=0)
+
+def print_class_distribution(dataset, name="Dataset"):
+    """
+    Prints the number of samples in each class.
+    Works with both Dataset and torch.utils.data.Subset.
+    """
+    if isinstance(dataset, torch.utils.data.Subset):
+        targets = np.array([dataset.dataset.targets[i] for i in dataset.indices])
+    else:
+        targets = np.array(dataset.targets)
+
+    unique, counts = np.unique(targets, return_counts=True)
+    print(f"\nClass-wise distribution of {name}:")
+    for cls, count in zip(unique, counts):
+        print(f"  Class {cls}: {count} samples")
+    print("\n")
+
+
 
 class CIFAR10(data.Dataset):
     """`CIFAR10 <https://www.cs.toronto.edu/~kriz/cifar.html>`_ Dataset.
@@ -201,7 +242,7 @@ class CIFAR100(CIFAR10):
         'md5': '7973b15100ade9c7d40fb424638fde48',
     }
 
-def CIFAR10Loader(root, batch_size, split='train', num_workers=2, labeled = True, aug=None,  shuffle=True):
+def CIFAR10Loader(root, batch_size, split='train', num_workers=2, labeled = True, aug=None,  shuffle=True, imbalance_config=None):
     if aug == None:
         transform = transforms.Compose([
             transforms.ToTensor(),
@@ -223,6 +264,13 @@ def CIFAR10Loader(root, batch_size, split='train', num_workers=2, labeled = True
         ]))
 
     dataset = CIFAR10(root=root, split=split, labeled=labeled, transform=transform, download=True)
+
+    if imbalance_config is not None:
+        imbalance_config = ast.literal_eval(imbalance_config)
+        apply_class_imbalance(dataset, imbalance_config)
+
+    print_class_distribution(dataset, name=f"CIFAR10-{split}")
+
     loader = data.DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, num_workers=2)
     return loader
 
@@ -252,6 +300,12 @@ def CIFAR100Loader(root, batch_size, split='train', num_workers=2, labeled = Tru
         dataset = CIFAR100(root=root, split=split, labeled=labeled, transform=transform, labeled_list=range(80), unlabeled_list=range(90, 100), download=True)
     elif mode == '80_20':
         dataset = CIFAR100(root=root, split=split, labeled=labeled, transform=transform, labeled_list=range(80), unlabeled_list=range(80, 100), download=True)
+
+    if imbalance_config is not None:
+        imbalance_config = ast.literal_eval(imbalance_config)
+        apply_class_imbalance(dataset, imbalance_config)
+
+    print_class_distribution(dataset, name=f"CIFAR100-{split}")
 
     loader = data.DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers, pin_memory=True)
     return loader

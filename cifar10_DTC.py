@@ -180,12 +180,14 @@ def TEP_train(model, train_loader, eva_loader, args):
     torch.save(model.state_dict(), args.model_dir)
     print("model saved to {}.".format(args.model_dir))
 
+@torch.no_grad()
 def test(model, test_loader, args, tsne=False):
     model.eval()
     preds=np.array([])
     targets=np.array([])
     feats = np.zeros((len(test_loader.dataset), args.n_clusters))
     probs= np.zeros((len(test_loader.dataset), args.n_clusters))
+
     for batch_idx, (x, label, idx) in enumerate(tqdm(test_loader)):
         x, label = x.to(device), label.to(device)
         feat = model(x)
@@ -196,6 +198,7 @@ def test(model, test_loader, args, tsne=False):
         idx = idx.data.cpu().numpy()
         feats[idx, :] = feat.cpu().detach().numpy()
         probs[idx, :] = prob.cpu().detach().numpy()
+    
     if tsne:
         from sklearn.manifold import TSNE
         import matplotlib.pyplot as plt
@@ -207,7 +210,17 @@ def test(model, test_loader, args, tsne=False):
         plt.scatter(X_embedded[:, 0], X_embedded[:, 1], c=targets, cmap='viridis')
         plt.title("t-SNE Visualization of Learned Features on Unlabelled CIFAR-10 Subset")
         plt.savefig(args.model_folder+'/tsne.png')
+     
+     
+    acc, nmi, ari = cluster_acc(targets.astype(int), preds.astype(int)), nmi_score(targets, preds), ari_score(targets, preds)
+
+    print('Test acc {:.4f}, nmi {:.4f}, ari {:.4f}'.format(acc, nmi, ari))
+
+    probs = torch.from_numpy(probs)
+
     return acc, nmi, ari, probs 
+
+
 
 if __name__ == "__main__":
     import argparse
@@ -234,6 +247,11 @@ if __name__ == "__main__":
     parser.add_argument('--model_name', type=str, default='resnet18')
     parser.add_argument('--save_txt_name', type=str, default='result.txt')
     parser.add_argument('--DTC', type=str, default='PI')
+
+    parser.add_argument("--imbalance_config", type=str, default=None, help="Class imbalance configuration (e.g., [{'class': 9, 'percentage': 20}, {'class': 7, 'percentage': 5}])")
+    
+
+
     args = parser.parse_args()
     args.cuda = torch.cuda.is_available()
     device = torch.device("cuda" if args.cuda else "cpu")
@@ -247,8 +265,8 @@ if __name__ == "__main__":
     args.model_dir = model_dir+'/'+args.model_name+'.pth'
     args.save_txt_path= args.exp_root+ '{}/{}/{}'.format(runner_name, args.DTC, args.save_txt_name)
 
-    train_loader = CIFAR10Loader(root=args.dataset_root, batch_size=args.batch_size, split='train', labeled=False, aug='twice', shuffle=True)
-    eval_loader = CIFAR10Loader(root=args.dataset_root, batch_size=args.batch_size, split='train', labeled=False, aug=None, shuffle=False)
+    train_loader = CIFAR10Loader(root=args.dataset_root, batch_size=args.batch_size, split='train', labeled=False, aug='twice', shuffle=True, imbalance_config=args.imbalance_config)
+    eval_loader = CIFAR10Loader(root=args.dataset_root, batch_size=args.batch_size, split='train', labeled=False, aug=None, shuffle=False, imbalance_config=args.imbalance_config)
 
     model = ResNet(BasicBlock, [2,2,2,2], 5).to(device)
     model.load_state_dict(torch.load(args.pretrain_dir), strict=False)

@@ -1,0 +1,9 @@
+URL transformed to HTTPS due to an HSTS policy
+--2025-07-24 06:56:46--  https://www.robots.ox.ac.uk/~vgg/research/DTC/data/experiments/pretrained/resnet18_svhn_classif_5.pth
+Resolving www.robots.ox.ac.uk (www.robots.ox.ac.uk)... 129.67.94.2
+Connecting to www.robots.ox.ac.uk (www.robots.ox.ac.uk)|129.67.94.2|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 44038603 (42M)
+Saving to: ‘resnet18_svhn_classif_5.pth’
+
+resnet18_svhn_classif_5.pth                     21%[====================>                                                                               ]   9.15M  13.1KB/s    eta 52m 3s 
