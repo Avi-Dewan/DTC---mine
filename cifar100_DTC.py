@@ -287,7 +287,7 @@ if __name__ == "__main__":
     elif args.DTC == 'TEP':
         TEP_train(model, train_loader, eval_loader, args)
 
-    acc, nmi, ari, _ = test(model, eval_loader, args, True)
+    acc, nmi, ari, _ = test(model, eval_loader, args)
     print('Init ACC {:.4f}, NMI {:.4f}, ARI {:.4f}'.format(init_acc, init_nmi, init_ari))
     print('Final ACC {:.4f}, NMI {:.4f}, ARI {:.4f}'.format(acc, nmi, ari))
 
