@@ -257,6 +257,8 @@ if __name__ == "__main__":
     device = torch.device("cuda" if args.cuda else "cpu")
     seed_torch(args.seed)
 
+    print("seed =", args.seed)
+
     runner_name = os.path.basename(__file__).split(".")[0] 
     model_dir= args.exp_root + '{}/{}'.format(runner_name, args.DTC)
     if not os.path.exists(model_dir):

@@ -222,7 +222,7 @@ def test(model, test_loader, args, tsne=False):
         plt.scatter(X_embedded[:, 0], X_embedded[:, 1], c=targets, cmap='viridis')
         plt.title("t-SNE Visualization of Learned Features on Unlabelled CIFAR-10 Subset")
         plt.savefig(args.model_folder+'/tsne.png')
-        
+
     return acc, nmi, ari, probs 
 
 if __name__ == "__main__":
@@ -258,6 +258,8 @@ if __name__ == "__main__":
     args.cuda = torch.cuda.is_available()
     device = torch.device("cuda" if args.cuda else "cpu")
     seed_torch(args.seed)
+
+    print("seed =", args.seed)
     
     runner_name = os.path.basename(__file__).split(".")[0] 
     model_dir= args.exp_root+ '{}/{}'.format(runner_name, args.DTC)
