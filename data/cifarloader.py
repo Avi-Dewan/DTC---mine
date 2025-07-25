@@ -274,7 +274,7 @@ def CIFAR10Loader(root, batch_size, split='train', num_workers=2, labeled = True
     loader = data.DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, num_workers=2)
     return loader
 
-def CIFAR100Loader(root, batch_size, split='train', num_workers=2, labeled = True, shuffle=True, aug=None, mode = '80_10'):
+def CIFAR100Loader(root, batch_size, split='train', num_workers=2, labeled = True, shuffle=True, aug=None, mode = '80_20', imbalance_config=None):
     if aug == None:
         transform = transforms.Compose([
             transforms.ToTensor(),
